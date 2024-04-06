@@ -1,0 +1,12 @@
+# vscode
+.vscode
+
+# java file
+plantuml-*.jar
+
+# generated files
+build*/
+
+# python
+.env/
+.idea/

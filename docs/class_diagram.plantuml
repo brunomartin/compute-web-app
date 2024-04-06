@@ -1,0 +1,202 @@
+@startuml
+
+namespace log {
+    class Log {
+        + Init()
+        + Print(level, message)
+
+    }
+}
+
+namespace data {
+
+    class Dataset {
+        - dims_
+        - attributes_
+        - file_
+
+        + GetDims()
+        + GetAttributes()
+        + GetData()
+    }
+    Dataset "1" o-- "0..1" File
+
+    class Data {
+        - datasets_
+
+        + GetAttributes()
+        + GetDatasets()
+    }
+    Data "1" o-- "1...n" Dataset
+
+    class DataSupplyState {
+        - data_
+
+        + GrabDataset()
+    }
+    DataSupplyState "1" o-- "1" Data : data_
+
+    class DatasetSupplier {
+        + SetTimeout()
+        + GetTimeout()
+        + {abstract} Close()
+        + {abstract} PushDataset()
+        + {abstract} PushEndSignal()
+    }
+
+    class DatasetSupplierServer {
+        + {abstract} Bind(info)
+        + {abstract} GetInfo()
+    }
+    DatasetSupplierServer -u-|> DatasetSupplier
+
+    class DatasetSupplierClient {
+        + {abstract} Connect(info)
+    }
+    DatasetSupplierClient -u-|> DatasetSupplier
+
+    class DatasetSupplierServerAsio {}
+    DatasetSupplierServerAsio -u-|> DatasetSupplierServer
+
+    class DatasetSupplierClientAsio {}
+    DatasetSupplierClientAsio -u-|> DatasetSupplierClient
+
+    class DatasetSupplierServerFile {}
+    DatasetSupplierServerFile -u-|> DatasetSupplierServer
+
+    class DatasetSupplierClientFile {}
+    DatasetSupplierClientFile -u-|> DatasetSupplierClient
+
+    class DatasetAggregator {
+        + SetTimeout()
+        + GetTimeout()
+        + {abstract} Close()
+        + {abstract} PullDataset()
+        + {abstract} PullEndSignal()
+    }
+
+    class DatasetAggregatorServer {
+        + {abstract} Bind(info)
+        + {abstract} GetInfo()
+    }
+    DatasetAggregatorServer -u-|> DatasetAggregator
+
+    class DatasetAggregatorClient {
+        + {abstract} Connect(info)
+    }
+    DatasetAggregatorClient -u-|> DatasetAggregator
+
+    class DatasetAggregatorServerAsio {}
+    DatasetAggregatorServerAsio -u-|> DatasetAggregatorServer
+
+    class DatasetAggregatorClientAsio {}
+    DatasetAggregatorClientAsio -u-|> DatasetAggregatorClient
+
+    class DatasetAggregatorServerFile {}
+    DatasetAggregatorServerFile -u-|> DatasetAggregatorServer
+
+    class DatasetAggregatorClientFile {}
+    DatasetAggregatorClientFile -u-|> DatasetAggregatorClient
+
+    class DataSupplier {
+        - data_supply_state_
+        - dataset_supplier_
+
+        + DataSupplier(dataset_supplier)
+        + Start(data_supply_state)
+        + Wait()
+    }
+    DataSupplier "1..n" o-- "1" DataSupplyState : data_supply_state_
+    DataSupplier "0..1" o-- "1" DatasetSupplierServer : dataset_supplier_
+
+    class DataAggregator {
+        - data_
+        - dataset_aggregator_
+
+        + Start(data)
+        + Wait()
+    }
+    DataAggregator o-- "1" Data : data_
+    DataAggregator "0..1" o-- "1" DatasetAggregatorServer : dataset_aggregator_
+}
+
+namespace process {
+
+    class ParameterValue {
+        - type_
+        - value_
+    }
+
+    class Parameter {
+        + name
+        + description
+        + type
+        + default_value
+    }
+    Parameter "1" o- "1" ParameterValue
+
+    class Definition {
+        - install_command_line_
+        - run_command_line_
+        - parameters_
+
+        + GetParameterValues()
+    }
+    Definition "1" -o "*" Parameter
+
+    class Worker {
+        - data_supplier_
+        - data_aggregator_
+        - status_
+        - standard_output_
+
+        + Launch(args)
+        + Pause()
+        + Resume()
+        + Stop()
+
+        + GetDataProviders()
+        + GetDataAggregators()
+    }
+    Worker "1..n" o-- "1" data.DataSupplier
+    Worker "1..n" o-- "1" data.DataAggregator
+
+    class WorkerStatus {
+        + progress
+        + is_running
+        + is_finished
+    }
+    Worker "1" *- "1" WorkerStatus
+
+    class DataProcess {
+        - definition_
+        - parameter_values_
+        - workers_
+
+        + Start()
+        + GetProgress()
+        + IsFinished()
+        + Pause()
+        + Resume()
+        + Stop()
+    }
+    DataProcess "*" o-u- "1" Definition
+    DataProcess "1" o- "*" ParameterValue
+    DataProcess "1" *-- "*" Worker
+}
+
+namespace client {
+
+    class Client {
+        + Client(argc, argv)
+        + PullDataset(dataset)
+        + PushDataset(dataset)
+
+        - dataset_aggregator_
+        - dataset_supplier_
+    }
+    Client "1" *-- "1" data.DatasetAggregatorClient
+    Client "1" *-- "1" data.DatasetSupplierClient
+}
+
+@enduml

@@ -1,0 +1,7 @@
+h5py==3.6
+
+#pkgconfig==1.5.1
+#Cython==0.29.19
+#-e git://github.com/brunomartin/h5py.git#egg=h5py
+
+numpy==1.18.2

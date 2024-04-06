@@ -1,0 +1,34 @@
+{
+  "name": "test 2",
+  "description": "This is a test process that take as input data file name and result file name, It shall be started before all data is uploaded and data can be read from results before the end of the data processing.",
+  "parameters": {
+    "mean_factor": {
+      "type": "number",
+      "default": 1.0
+    }
+  },
+  "options": [
+    "early_process",
+    "early_result"
+  ],
+  "args": [
+    "../.venv/bin/python",
+    "app.py",
+    "mean_factor",
+    "data_file",
+    "result_file"
+  ],
+  "win_args": [
+    "..\\.venv\\Scripts\\python.exe",
+    "app.py",
+    "mean_factor",
+    "data_file",
+    "result_file"
+  ],
+  "results": [
+    "mean",
+    "std",
+    "min",
+    "max"
+  ]
+}

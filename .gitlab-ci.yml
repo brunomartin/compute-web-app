@@ -1,0 +1,63 @@
+image: debian:11
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  cache:
+    paths:
+      # - ../install/poco/
+  before_script:
+
+    # define aliases
+    - shopt -s expand_aliases
+    - alias apt-get="apt-get -o=Dpkg::Use-Pty=0 -y -qq"
+    - alias mkdir="mkdir -p"
+
+    # install required packages
+    - apt-get update && apt-get install apt-utils > /dev/null
+    - apt-get install build-essential g++-8 cmake git > /dev/null
+    
+    # For Poco
+    # - cd $INSTALL_DIR
+    # - apt-get-install libssl-dev > /dev/null
+    # - git clone --depth 1 --branch poco-1.11.1-release  https://github.com/pocoproject/poco
+    # - cd poco && mkdir build_cmake && cd build_cmake
+    # - cmake .. -D CMAKE_BUILD_TYPE=Release -D ENABLE_FOUNDATION=ON -D ENABLE_JSON=ON -D ENABLE_NET=ON -D ENABLE_NETSSL=ON -D ENABLE_DATA_MYSQL=OFF -D ENABLE_DATA_ODBC=OFF -D ENABLE_DATA_POSTGRESQL=OFF -D ENABLE_DATA_SQLITE=OFF -D ENABLE_JWT=OFF -D ENABLE_MONGODB=OFF -D ENABLE_MONGODB=OFF -D ENABLE_PAGECOMPILER=OFF -D ENABLE_PAGECOMPILER_FILE2PAGE=OFF -D ENABLE_REDIS=OFF -D ENABLE_UTIL=OFF -D ENABLE_XML=OFF -D ENABLE_UTIL=OFF -D ENABLE_ACTIVERECORD=OFF -D ENABLE_ACTIVERECORD_COMPILER=OFF -D ENABLE_ZIP=OFF -D ENABLE_ENCODINGS=OFF -D ENABLE_ENCODINGS_COMPILER=OFF > /dev/null
+    # - make -j4 install > /dev/null
+
+    - apt-get install libpoco-dev > /dev/null
+    - apt-get install -y libeigen3-dev > /dev/null
+
+  script:
+    # now project itself
+    - git submodule init
+    - git submodule update
+    - mkdir build && cd build
+    - cmake -D CMAKE_BUILD_TYPE=Release ..
+    - cmake --build . --config Release --parallel 4
+
+  artifacts:
+    paths:
+    - build/*
+
+test:
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y cmake libpoco-dev > /dev/null
+  script:
+    - cd build
+    - ctest -C Release
+
+# test-python:
+#   stage: test
+#   before_script:
+#     - apt-get update && apt-get install -y pkg-config libhdf5-dev zlib1g python3-pip python3-venv > /dev/null
+#   script:
+#     # test python app
+#     - cd python
+#     - pip3 install -r requirements.txt
+#     - pytest -vv

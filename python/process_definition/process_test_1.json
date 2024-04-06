@@ -1,0 +1,30 @@
+{
+  "name": "test 1",
+  "description": "This is a test process that take as input data file name and result file name.",
+  "parameters": {
+    "mean_factor": {
+      "type": "number",
+      "default": 1.0
+    }
+  },
+  "args": [
+    "../.venv/bin/python",
+    "app.py",
+    "mean_factor",
+    "data_file",
+    "result_file"
+  ],
+  "win_args": [
+    "..\\.venv\\Scripts\\python.exe",
+    "app.py",
+    "mean_factor",
+    "data_file",
+    "result_file"
+  ],
+  "results": [
+    "mean",
+    "std",
+    "min",
+    "max"
+  ]
+}

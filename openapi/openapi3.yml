@@ -1,0 +1,534 @@
+openapi: 3.0.0
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger REST Article
+
+servers:
+#  - url: https://api.example.com/v1
+#    description: Production server (uses live data)
+#  - url: http://localhost:5000/api
+#    description: Sandbox server (uses test data)
+  - url: /api
+    description: Sandbox server (uses test data)
+
+components:
+  schemas:
+    Data:
+      properties:
+        id:
+          type: integer
+        version:
+          type: string
+        name:
+          type: string
+        image_width:
+          type: integer
+        image_height:
+          type: integer
+        type:
+          type: string
+        slice_locations:
+          type: array
+          items:
+            type: number
+        echo_times:
+          type: array
+          items:
+            type: number
+      required:
+        - version
+        - name
+        - image_width
+        - image_height
+        - type
+        - slice_locations
+        - echo_times
+    Process:
+      properties:
+        id:
+          type: integer
+        version:
+          type: string
+        process_definition_id:
+          type: string
+        data_id:
+          type: string
+      required:
+        - version
+        - data_id
+    ProcessAction:
+      properties:
+        id:
+          type: integer
+        version:
+          type: string
+        process_id:
+          type: string
+        name:
+          type: string
+      required:
+        - version
+        - process_id
+        - name
+
+
+paths:
+  /:
+    get:
+      tags:
+        - "Greetings"
+      operationId: api.search
+      summary: "Greetings"
+      description: "Greetings from Compute Web App"
+      responses:
+        200:
+          description: "Greetings from Compute Web App"
+
+  /data:
+    get:
+      operationId: api.data.search
+      summary: "Data uploaded"
+      description: "List the data uploaded"
+      responses:
+        200:
+          description: "List of data uploaded"
+    post:
+      operationId: api.data.post
+      responses:
+        200:
+          description: "Successful Upload"
+      requestBody:
+        description: Example of data post
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Data'
+
+  /data/{data_id}:
+    get:
+      tags:
+        - "Data"
+      operationId: api.data.get
+      summary: "Process"
+      description: "Get data information"
+      responses:
+        200:
+          description: "Data information"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
+      parameters:
+        - in: path
+          name: data_id
+          schema:
+            type: string
+          required: true
+          description: Data Id.
+
+  /data/{data_id}/file:
+    get:
+      tags:
+        - "Data"
+      operationId: api.data.get_file
+      summary: "Data file"
+      description: "Get data file"
+      responses:
+        200:
+          description: File containing data of {data_id}
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      parameters:
+        - in: path
+          name: data_id
+          schema:
+            type: string
+          required: true
+          description: Data Id.
+
+  /data/{data_id}/group/{group_id}/value:
+    post:
+      operationId: api.data.post_group_value
+      responses:
+        200:
+          description: "Successful Value Upload"
+      parameters:
+        - in: path
+          name: data_id
+          schema:
+            type: string
+          required: true
+          description: Data Id.
+        - in: path
+          name: group_id
+          schema:
+            type: integer
+          required: true
+          description: Group Id.
+      requestBody:
+        description: Example of data post
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+
+  /data/{data_id}/group/{group_id}/dataset/{dataset_id}/image:
+    get:
+      operationId: api.data.get_group_dataset_image
+      responses:
+        200:
+          description: "Image"
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+      parameters:
+        - in: path
+          name: data_id
+          schema:
+            type: string
+          required: true
+          description: Data Id.
+        - in: path
+          name: group_id
+          schema:
+            type: integer
+          required: true
+          description: Group Id.
+        - in: path
+          name: dataset_id
+          schema:
+            type: string
+          required: true
+          description: Dataset Id.
+        - in: query
+          name: start
+          schema:
+            type: integer
+          description: first image.
+        - in: query
+          name: length
+          schema:
+            type: integer
+          description: number of images.
+
+  /data/{data_id}/group/value:
+    post:
+      operationId: api.data.post_value
+      responses:
+        200:
+          description: "Successful Value Upload"
+      parameters:
+        - in: path
+          name: data_id
+          schema:
+            type: string
+          required: true
+          description: Data Id.
+        - in: query
+          name: group_ids
+          schema:
+            type: string
+          required: true
+          description: Group Ids.
+      requestBody:
+        description: Example of data post
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+
+  /data_uploading:
+    get:
+      tags:
+        - "Uploading Data"
+      operationId: api.data.uploading_search
+      summary: "Uploading Data"
+      description: "List the Uploading Data"
+      responses:
+        200:
+          description: "List of Uploading Data"
+
+  /process_definition:
+    get:
+      tags:
+        - "Process"
+      operationId: api.process_definition.search
+      summary: "Process definitions"
+      description: "List the process definitions"
+      responses:
+        200:
+          description: "List of process definitions"
+
+  /process:
+    get:
+      tags:
+        - "Process"
+      operationId: api.process.search
+      summary: "Processes"
+      description: "List the processes"
+      responses:
+        200:
+          description: "List of processes"
+    post:
+      operationId: api.process.post
+      responses:
+        200:
+          description: "Successful Start process"
+      requestBody:
+        description: "Example of process post"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Process'
+
+  /process/{process_id}:
+    get:
+      tags:
+        - "Process"
+      operationId: api.process.get
+      summary: "Process"
+      description: "Get process information"
+      responses:
+        200:
+          description: "Process information"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Process'
+      parameters:
+        - in: path
+          name: process_id
+          schema:
+            type: string
+          required: true
+          description: Result Id.
+
+  /process_running:
+    get:
+      tags:
+        - "Running Process"
+      operationId: api.process.running_search
+      summary: "Running processes"
+      description: "List the running processes"
+      responses:
+        200:
+          description: "List of running processes"
+
+  /process_action:
+    get:
+      tags:
+        - "Process"
+      operationId: api.process_action.search
+      summary: "Process actions"
+      description: "Process actions like start, stop, pause, reset, ..."
+      responses:
+        200:
+          description: "List of process actions"
+    post:
+      operationId: api.process_action.post
+      responses:
+        200:
+          description: "Successful action process added"
+      requestBody:
+        description: "Example of process action"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessAction'
+
+  /result:
+    get:
+      tags:
+        - "Result"
+      operationId: api.result.search
+      summary: "Results"
+      description: "List the results"
+      responses:
+        200:
+          description: "List of results"
+
+  /result/{result_id}:
+    get:
+      tags:
+        - "Result"
+      operationId: api.result.get
+      summary: "Results"
+      description: "List the results"
+      responses:
+        200:
+          description: "List of result"
+      parameters:
+        - in: path
+          name: result_id
+          schema:
+            type: string
+          required: true
+          description: Result Id.
+
+
+  /result/{result_id}/file:
+    get:
+      tags:
+        - "Result"
+      operationId: api.result.get_file
+      summary: "Result file"
+      description: "Get result file"
+      responses:
+        200:
+          description: File containing data of {result_id}
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      parameters:
+          - in: path
+            name: result_id
+            schema:
+              type: string
+            required: true
+            description: Result Id.
+
+  /result/{result_id}/group/{group_id}:
+    get:
+      tags:
+        - "Result"
+      operationId: api.result.group_get
+      summary: "Results"
+      description: "List the results"
+      responses:
+        200:
+          description: "List of result"
+      parameters:
+        - in: path
+          name: result_id
+          schema:
+            type: string
+          required: true
+          description: Result Id.
+        - in: path
+          name: group_id
+          schema:
+            type: integer
+          required: true
+          description: group name.
+
+  /result/{result_id}/group/{group_id}/dataset/{dataset_id}:
+    get:
+      tags:
+        - Result
+      operationId: api.result.dataset_get
+      summary: Dataset details
+      description: Dataset details
+      parameters:
+        - in: path
+          name: result_id
+          schema:
+            type: string
+          required: true
+          description: Result Id.
+        - in: path
+          name: group_id
+          schema:
+            type: integer
+          required: true
+          description: group name.
+        - in: path
+          name: dataset_id
+          schema:
+            type: string
+          required: true
+          description: Dataset Id.
+      responses:
+        200:
+          description: "Details the dataset in result {id}"
+
+  /result/{result_id}/group/{group_id}/dataset/{dataset_id}/value:
+    get:
+      tags:
+        - Result
+      operationId: api.result.dataset_value_get
+      summary: Files uploaded
+      description: Values of the dataset {group_id} in result {result_id}
+      parameters:
+        - in: path
+          name: result_id
+          schema:
+            type: string
+          required: true
+          description: Result Id.
+        - in: path
+          name: group_id
+          schema:
+            type: integer
+          required: true
+          description: group name.
+        - in: path
+          name: dataset_id
+          schema:
+            type: string
+          required: true
+          description: dataset name.
+      responses:
+        200:
+          description: Values of the dataset {dataset_id} in file {file_id}
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+
+  /result/{result_id}/group/{group_id}/dataset/{dataset_id}/image:
+    get:
+      operationId: api.result.get_group_dataset_image
+      responses:
+        200:
+          description: "Image"
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+      parameters:
+        - in: path
+          name: result_id
+          schema:
+            type: string
+          required: true
+          description: Data Id.
+        - in: path
+          name: group_id
+          schema:
+            type: integer
+          required: true
+          description: Group Id.
+        - in: path
+          name: dataset_id
+          schema:
+            type: string
+          required: true
+          description: Dataset Id.
+        - in: query
+          name: start
+          schema:
+            type: integer
+          description: first image.
+        - in: query
+          name: length
+          schema:
+            type: integer
+          description: number of images.

@@ -1,0 +1,26 @@
+# website and REST api packages
+connexion[swagger-ui]==2.7.0
+Flask==2.0.0
+Flask-Cors==3.0.8
+
+# write data packages
+h5py==3.6.0
+
+#pkgconfig==1.5.1
+#Cython==0.29.19
+#-e git://github.com/brunomartin/h5py.git#egg=h5py
+
+psutil==5.7.3
+pyzmq==19.0.1
+
+# render images packages
+Pillow==7.1.2
+matplotlib==3.3.2
+
+# test packages
+pytest==5.4.3
+
+# production packages
+PyInstaller==4.7
+gunicorn==20.0.4
+waitress==1.4.4

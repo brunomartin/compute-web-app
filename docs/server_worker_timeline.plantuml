@@ -1,0 +1,79 @@
+@startuml
+concise "Server" as Server
+concise "Client" as Client
+
+@0
+Server is "Waiting for clients"
+
+@+200
+Client is Starting
+
+@+100
+Client -> Server : Register
+Client is {-}
+Server is "Creating IO"
+
+@+200
+Server -> Client : IO info
+Server is {-}
+Client is "Creating IO"
+
+@+200
+Client -> Server : Request data
+Server is "Reading file"
+Client is {-}
+
+@+200
+Server -> Client@+100 : Data
+Server is Transfering
+Client is Receiving
+
+@+100
+Server is {-}
+Client is "Processing"
+
+@+200
+Client -> Server : Post data
+Client -> Server@+100 : Data
+Server is Receiving
+Client is Transfering
+
+@+100
+Server is "Writing file"
+Client -> Server@+200 : Request data
+Client is {-}
+
+@+200
+Server is "Reading file"
+
+@+100
+Server -> Client@+100 : Data
+Server is Transfering
+Client is Receiving
+
+@+100
+Server is "..."
+Client is "..."
+
+@+200
+Client -> Server : Post data
+Client -> Server@+100 : Data
+Server is Receiving
+Client is Transfering
+
+@+100
+Server is "Writing file"
+Client -> Server@+200 : Request data
+Client is {-}
+
+@+200
+Server -> Client : No more Data
+Server is Stopping
+Client is Stopping
+
+@+200
+Server is {-}
+Client is {-}
+
+@enduml
+

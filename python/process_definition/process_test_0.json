@@ -1,0 +1,38 @@
+{
+  "name": "test 0",
+  "description": "This is a test process that take as input data file name and result file name, of course, step_cout to set the number of steps and time a step takes and generate result file as a copy of data file",
+  "parameters": {
+    "step_count": {
+      "type": "integer",
+      "default": 100
+    },
+    "step_process_time": {
+      "type": "number",
+      "default": 0.05
+    },
+    "end_message": {
+      "type": "string"
+    }
+  },
+  "args": [
+    "../.venv/bin/python",
+    "app.py",
+    "step_count",
+    "step_process_time",
+    "end_message",
+    "data_file",
+    "result_file"
+  ],
+  "win_args": [
+    "..\\.venv\\Scripts\\python.exe",
+    "app.py",
+    "step_count",
+    "step_process_time",
+    "end_message",
+    "data_file",
+    "result_file"
+  ],
+  "results": [
+    "test"
+  ]
+}

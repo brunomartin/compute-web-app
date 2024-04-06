@@ -1,0 +1,3 @@
+[submodule "src/data/asio"]
+	path = src/data/asio
+	url = https://github.com/chriskohlhoff/asio

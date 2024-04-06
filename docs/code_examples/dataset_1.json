@@ -1,0 +1,8 @@
+{
+  "attributes": {
+    "integer": 43,
+    "string": "min_least_square"
+  },
+  "dims": [120, 80],
+  "type": "uint16"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "test",
+  "description": "This a test process",
+  "parameters": [
+    {
+      "name": "parameter_0",
+      "type": "number",
+      "default_value": 42
+    },
+    {
+      "name": "parameter_1",
+      "type": "string",
+      "default_value": "test"
+    }
+  ]
+}

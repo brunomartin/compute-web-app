@@ -1,0 +1,96 @@
+@startuml
+concise "Server" as Server
+concise "ServerPush" as ServerPush
+concise "Client" as Client
+concise "ServerPull" as ServerPull
+
+@0
+Server is "Waiting for clients"
+
+@+100
+Client is Starting
+
+@+200
+Client -> Server@+100 : Register
+Client is {-}
+
+@+100
+Server is "Creating IO"
+Server -> ServerPush@+100 : Start Push thread
+Server -> ServerPull@+100 : Start Pull thread
+
+@+100
+ServerPush is {-}
+ServerPull is {-}
+
+@+100
+Server -> Client@+100 : IO info
+Server is {-}
+
+@+100
+ServerPush is "Reading file"
+Client is "Creating IO"
+
+@+200
+ServerPush -> Client@+100 : Push data
+ServerPush is {-}
+Client is {-}
+
+@+100
+ServerPush is "Reading file"
+Client is "Processing"
+
+@+200
+Client is {-}
+ServerPush -> Client@+100 : Push data
+ServerPush is {-}
+Client -> ServerPull@+100 : Push data
+
+@+100
+ServerPush is "Reading file"
+Client is "Processing"
+ServerPull is "Writing file"
+
+@+200
+ServerPush -> Client@+100 : Push data
+ServerPush is {-}
+Client -> ServerPull@+100 : Push data
+Client is {-}
+ServerPull is {-}
+
+@+100
+ServerPush is "Reading file"
+Client is "Processing"
+ServerPull is "Writing file"
+
+@+200
+Client is {-}
+ServerPush -> Client@+100 : Push data
+ServerPush is {-}
+Client -> ServerPull@+100 : Push data
+ServerPull is {-}
+
+@+100
+ServerPush is "End of file"
+Client is "Processing"
+ServerPull is "Writing file"
+
+@+200
+ServerPush -> Client@+100 : No more data
+ServerPush is {-}
+Client -> ServerPull@+100 : Push data
+Client is {-}
+ServerPull is {-}
+
+@+100
+Client is "Stopping"
+ServerPull is "Writing file"
+
+@+200
+Server is {-}
+ServerPush is {-}
+ServerPull is {-}
+Client is {hidden}
+
+@enduml
+

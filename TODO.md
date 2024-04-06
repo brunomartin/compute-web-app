@@ -1,0 +1,47 @@
+TODO LIST
+-----
+
+- [x] add TODO list
+- [x] fix issues:
+  - [x] no data, result, process_definition paths crashes app
+  - [x] no frontend/dist crashes pyinstaller
+  - [x] frontend point to localhost, not to running website
+- [ ] document rest api
+- [ ] move get application data paths in a file
+- [ ] make a basic UI for:
+  - [x] monitoring data uploads
+  - [x] monitoring processes
+  - [ ] monitoring data downloads
+  - [ ] see some pictures of data/result
+- [x] let upload/download data in parallel (lock h5, try/expect blocks, ...)
+- [x] finish general tests
+  - [x] upload
+  - [x] set process
+  - [x] run process
+  - [x] compare result from file
+  - [x] compare results from api
+- [x] add timestamps to posts
+- [ ] add UID to identify client, server
+- [ ] add [SLICE_OK X] in process log so that slice X can be read from result api endpoint, find a way to make it possible regarding system file access, SWMR for h5 ? pre create result.h5 ?
+- [ ] find a way to document data organization to make this app versatile (e.g. magnitude and phase)
+- [x] UI is not necessary, permit to build app whithout frontend
+- [ ] read application data path content (data, process, result) at startup and load them in memory
+- [x] h5 files cannot be accessed from multiple process for writing, find a way to record temp data per worker and add them to h5 file after, another app ? a side thread that buffers data and write ?
+- [ ] reformat examples: one with python script for development, one for compiled version with pyinstaller for deployment
+- [x] let client send multiple slices at once to speed up transfer
+- [x] compute cumulated stored size instead of getting it from disk
+- [x] find a way for windows to start the program with absolute path, args can be defined with type like "path"
+- [x] add env variable to tell that:
+  - [x] we run ZMQ or not
+  - [x] we keep file open when writing, if not, don't open with in SWMR mode with libver latest
+- [ ] read/write h5 file in matlab test process
+- [ ] document result file, data type for instance
+- [ ] find a way a stop a process
+- [ ] give info about cpu usage on compute host machine
+- [ ] clean running process ids file on startup or when a process goes into error state
+- [ ] give info on data/process/result with modal
+- [x] add to input:
+  -[x] metadata from DICOM
+- [ ] add to results:
+  - [ ] metadata to update in new DICOM created
+- [ ] add cache system to generated images

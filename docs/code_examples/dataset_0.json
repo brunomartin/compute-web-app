@@ -1,0 +1,8 @@
+{
+  "attributes": {
+    "integer": 42,
+    "string": "fft"
+  },
+  "dims": [120, 80],
+  "type": "uint16"
+}
